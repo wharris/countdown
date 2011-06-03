@@ -108,12 +108,18 @@ betterExpression :: Int -> Expression -> (Maybe Expression) -> Bool
 betterExpression _ _ Nothing = True
 betterExpression target x y = better target (eval x) (eval . fromJust $ y)
 
+solved :: Int -> (Maybe Expression) -> Bool
+solved _ Nothing = False
+solved target (Just closest)
+    | isNothing (eval closest) = False
+    | otherwise = (==) target (fromJust . eval $ closest)
+
 best :: Int -> (Maybe Expression) -> [[Expression]] -> [Expression]
 best _ _ [] = []
-best target closest (g:gs) =
-    if betterExpression target (head g) closest
-        then head g : best target (Just . head $ g) gs
-        else best target closest gs
+best target closest (g:gs)
+    | solved target closest = []
+    | betterExpression target (head g) closest = head g : best target (Just . head $ g) gs
+    | otherwise = best target closest gs
 
 play :: Game -> [[Expression]]
 play (Game xs _) = solutions $ map Equ xs
