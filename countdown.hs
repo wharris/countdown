@@ -1,4 +1,5 @@
 import Data.Maybe
+import Data.List
 
 data Expression =
     Add Expression Expression |
@@ -7,7 +8,7 @@ data Expression =
     Div Expression Expression |
     Equ Int |
     Nowt
-    deriving (Show)
+    deriving (Show, Eq)
 
 eval' :: (a -> b -> c) -> (Maybe a) -> (Maybe b) -> (Maybe c)
 eval' f Nothing _ = Nothing
@@ -32,6 +33,7 @@ repr :: Expression -> String
 repr Nowt = "Nowt"
 
 repr (Equ x) = show x
+
 
 repr (Add x y) = (repr x) ++ "+" ++ (repr y)
 
@@ -62,3 +64,41 @@ showOrNothing Nothing = "Nothing"
 showOrNothing x = show . fromJust $ x
 
 showEquation x = (repr x) ++ " = " ++ (showOrNothing (eval x))
+
+
+without :: (Eq a) => (a, a) -> [a] -> [a]
+without (i1, i2) xs = (delete i1) . (delete i2) $ xs
+
+expressions :: (Expression -> Expression -> Expression) -> [Expression] -> [[Expression]]
+expressions func xs =
+    filter (isJust . eval . head) [func i1 i2 : without (i1, i2) xs | (i1, i2) <- combination xs]
+
+allExpressions :: [Expression] -> [[Expression]]
+allExpressions [] = []
+allExpressions xs =
+    expressions Add xs ++
+    expressions Sub xs ++
+    expressions Mul xs ++
+    expressions Div xs
+
+solutions :: [Expression] -> [[Expression]]
+solutions [] = []
+solutions xs =
+    let all = allExpressions xs
+    in  all ++ foldl (++) [] (map solutions all)
+
+combination [] = []
+combination (x:xs) = [(x, x') | x' <- xs] ++ combination xs
+
+
+game = map Equ [2,2,1,75,100,10]
+
+
+join sep = foldl1 (\x y -> x ++ sep ++ y)
+
+showGame es = join ", " $ map showEquation es
+
+listGames [] = putStr ""
+listGames (g:gs) = putStrLn (showGame g) >> listGames gs
+
+main = listGames (solutions game)
