@@ -122,5 +122,9 @@ target :: Game -> Int
 target (Game _ target) = target
 
 game = Game [25,50,75,100,3,6] 952
+game2 = Game [75, 50, 2, 3, 8, 7] 812
 
-main = listExpressions (best (target game) Nothing (play game))
+bestAnswers :: Game -> [Expression]
+bestAnswers g = best (target g) Nothing (play g)
+
+main = listExpressions $ bestAnswers game2
