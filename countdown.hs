@@ -53,13 +53,6 @@ repr (x `Div` (Equ y)) = "(" ++ (repr x) ++ ")/" ++ (show y)
 repr (x `Div` y) = "(" ++ (repr x) ++ ")/(" ++ (repr y) ++ ")"
 
 
-one = Equ 1
-two = Equ 2
-three = Equ 3
-oneAddOne = Add one one
-
-equation = three `Add` (two `Mul` one)
-
 showOrNothing Nothing = "Nothing"
 showOrNothing x = show . fromJust $ x
 
