@@ -91,8 +91,7 @@ combination [] = []
 combination (x:xs) = [(x, x') | x' <- xs] ++ combination xs
 
 
-game = map Equ [2,2,1,75,100,10]
-
+data Game = Game [Int] Int
 
 join sep = foldl1 (\x y -> x ++ sep ++ y)
 
@@ -101,4 +100,34 @@ showGame es = join ", " $ map showEquation es
 listGames [] = putStr ""
 listGames (g:gs) = putStrLn (showGame g) >> listGames gs
 
-main = listGames (solutions game)
+listExpressions [] = putStr ""
+listExpressions (x:xs) = putStrLn (showEquation x) >> listExpressions xs
+
+distance :: (Num a) => a -> a -> a
+distance x y = abs (x - y)
+
+better :: Int -> (Maybe Int) -> (Maybe Int) -> Bool
+better _ Nothing _ = False
+better _ (Just x) Nothing = True
+better target x y = distance target (fromJust x) < distance target (fromJust y)
+
+betterExpression :: Int -> Expression -> (Maybe Expression) -> Bool
+betterExpression _ _ Nothing = True
+betterExpression target x y = better target (eval x) (eval . fromJust $ y)
+
+best :: Int -> (Maybe Expression) -> [[Expression]] -> [Expression]
+best _ _ [] = []
+best target closest (g:gs) =
+    if betterExpression target (head g) closest
+        then head g : best target (Just . head $ g) gs
+        else best target closest gs
+
+play :: Game -> [[Expression]]
+play (Game xs _) = solutions $ map Equ xs
+
+target :: Game -> Int
+target (Game _ target) = target
+
+game = Game [25,50,75,100,3,6] 952
+
+main = listExpressions (best (target game) Nothing (play game))
