@@ -43,7 +43,10 @@ repr (x `Sub` (Div y z)) = (repr x) ++ "-" ++ (repr (Div y z))
 repr (x `Sub` y) = (repr x) ++ "-(" ++ (repr y) ++ ")"
 
 repr ((Equ x) `Mul` (Equ y)) = (show x) ++ "*" ++ (show y)
+repr ((x `Mul` y) `Mul` (Equ z)) = (repr (x `Mul` y)) ++ "*" ++ (show z)
+repr (x `Mul` (Equ y)) = "(" ++ (repr x) ++ ")*" ++ (show y)
 repr ((Mul x y) `Mul` (Mul i j)) = (repr (Mul x y)) ++ "*" ++ (repr (Mul i j))
+repr (x `Mul` (i `Mul` j)) = "(" ++ (repr x) ++ ")*" ++ (repr (i `Mul` j))
 repr ((Mul x y) `Mul` (Div i j)) = (repr (Mul x y)) ++ "*" ++ (repr (Div i j))
 repr (x `Mul` y) = "(" ++ (repr x) ++ ")*(" ++ (repr y) ++ ")"
 
