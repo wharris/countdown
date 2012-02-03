@@ -1,7 +1,6 @@
 module Expression
     (Expression(Add, Sub, Mul, Div, Equ)
     ,eval
-    ,showEquation 
     )
 where
 
@@ -15,7 +14,7 @@ data Expression =
     Div Expression Expression |
     Equ Int |
     Nowt
-    deriving (Show, Eq)
+    deriving (Eq)
 
 eval' :: (a -> b -> c) -> (Maybe a) -> (Maybe b) -> (Maybe c)
 eval' f Nothing _ = Nothing
@@ -68,3 +67,5 @@ showOrNothing x = show . fromJust $ x
 
 showEquation :: Expression -> String
 showEquation x = (repr x) ++ " = " ++ (showOrNothing (eval x))
+
+instance Show Expression where show = showEquation

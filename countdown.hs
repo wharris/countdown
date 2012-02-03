@@ -36,7 +36,7 @@ printLines [] = putStr ""
 printLines (x:xs) = putStrLn x >> printLines xs
 
 listExpressions :: [Expression] -> IO ()
-listExpressions = printLines . map showEquation
+listExpressions = printLines . map show
 
 game = Game [25,50,75,100,3,6] 952
 game2 = Game [75, 50, 2, 3, 8, 7] 812
