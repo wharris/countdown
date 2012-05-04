@@ -65,7 +65,6 @@ repr (x `Div` y) = "(" ++ (repr x) ++ ")/(" ++ (repr y) ++ ")"
 showOrNothing Nothing = "Nothing"
 showOrNothing x = show . fromJust $ x
 
-showEquation :: Expression -> String
-showEquation x = (repr x) ++ " = " ++ (showOrNothing (eval x))
+instance Show Expression where
+    show x = (repr x) ++ " = " ++ (showOrNothing (eval x))
 
-instance Show Expression where show = showEquation
