@@ -1,7 +1,7 @@
 module Game
     (Game(Game)
-    ,target
-    ,play
+    ,bestAnswer
+    ,bestAnswers
     )
 where
 import Data.Maybe
@@ -42,3 +42,9 @@ play (Game xs _) = solutions $ map Equ xs
 
 target :: Game -> Int
 target (Game _ target) = target
+
+bestAnswers :: Game -> [Expression]
+bestAnswers g = best (target g) Nothing (play g)
+
+bestAnswer = last . bestAnswers
+

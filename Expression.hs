@@ -1,6 +1,7 @@
 module Expression
     (Expression(Add, Sub, Mul, Div, Equ)
     ,eval
+    ,best
     )
 where
 
@@ -64,6 +65,32 @@ repr (x `Div` y) = "(" ++ (repr x) ++ ")/(" ++ (repr y) ++ ")"
 
 showOrNothing Nothing = "Nothing"
 showOrNothing x = show . fromJust $ x
+
+solved :: Int -> (Maybe Expression) -> Bool
+solved _ Nothing = False
+solved target (Just closest)
+    | isNothing (eval closest) = False
+    | otherwise = (==) target (fromJust . eval $ closest)
+
+distance :: (Num a) => a -> a -> a
+distance x y = abs (x - y)
+
+better :: Int -> (Maybe Int) -> (Maybe Int) -> Bool
+better _ Nothing _ = False
+better _ (Just x) Nothing = True
+better target x y = distance target (fromJust x) < distance target (fromJust y)
+
+betterExpression :: Int -> Expression -> (Maybe Expression) -> Bool
+betterExpression _ _ Nothing = True
+betterExpression target x y = better target (eval x) (eval . fromJust $ y)
+
+best :: Int -> (Maybe Expression) -> [[Expression]] -> [Expression]
+best _ _ [] = []
+best target closest (g:gs)
+    | solved target closest = []
+    | betterExpression target (head g) closest =
+        head g : best target (Just . head $ g) gs
+    | otherwise = best target closest gs
 
 instance Show Expression where
     show x = (repr x) ++ " = " ++ (showOrNothing (eval x))
