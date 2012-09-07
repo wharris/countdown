@@ -13,9 +13,11 @@ data Game = Game [Int] Int
 without :: (Eq a) => (a, a) -> [a] -> [a]
 without (i1, i2) xs = (delete i1) . (delete i2) $ xs
 
-expressions :: (Expression -> Expression -> Expression) -> [Expression] -> [[Expression]]
+expressions :: (Expression -> Expression -> Expression) -> [Expression]
+                -> [[Expression]]
 expressions func xs =
-    filter (isJust . eval . head) [func i1 i2 : without (i1, i2) xs | (i1, i2) <- combination xs]
+    filter (isJust . eval . head) [func i1 i2 : without (i1, i2) xs |
+                                   (i1, i2) <- combination xs]
 
 allExpressions :: [Expression] -> [[Expression]]
 allExpressions [] = []
