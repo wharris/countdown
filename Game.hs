@@ -36,9 +36,6 @@ solutions xs =
 combination [] = []
 combination (x:xs) = [(x, x') | x' <- xs] ++ combination xs
 
-
-join sep = foldl1 (\x y -> x ++ sep ++ y)
-
 play :: Game -> [[Expression]]
 play (Game xs _) = solutions $ map Equ xs
 
